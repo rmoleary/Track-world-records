@@ -1,6 +1,13 @@
 
 # coding: utf-8
 
+# ###Track World Records
+# 
+# For the Marathon, the fastest man has only run the race 10% faster than the fastest women. Given the substantial progress in the world record time for the Marathon over the past century (about 30%), I wondered how long ago the men ran at the same pace as women do today.
+# 
+# I calculate this for each race, as well as show the evolution of the race times from the 100m to the full marathon over the past century.  Quickly, it became apparent that many of the women's world records were recorded before 1990.  This has been pointed out a number of times as a consequence of prevalent doping prior to the institution of randomized drug tests in 1989.  It appears doping had a much larger impact on women than men.
+# 
+
 # In[5]:
 
 get_ipython().magic(u'pylab inline')
@@ -11,7 +18,7 @@ get_ipython().magic(u'pylab inline')
 import pandas as pd
 
 
-# ###Original Data
+# ###Original Data of world record times
 # 2015 data extracted from a PDF of historical world records from the IAAF:
 # 
 # http://iaaf-ebooks.s3.amazonaws.com/2015/Beijing-2015-Statistics-Handbook/index.htm
@@ -25,7 +32,10 @@ fns = ['100m.txt','200m.txt','400m.txt','800m.txt','1000m.txt','1500m.txt','mile
             '2000mf.txt','3000mf.txt','5000mf.txt','10kmf.txt','20kmf.txt','halfmarathonf.txt','25kmf.txt','marathonf.txt']
 
 
+# We record distances in meters.
+
 # In[8]:
+
 
 distance = array([100.,200.,400.,800.,1000.,1500.,1609.34,2000.,3000.,5000.,1.e4,2.e4,21097.5,2.5e4,2*21097.5,
                   100.,200.,400.,800.,1000.,1500.,1609.34,2000.,3000.,5000.,1.e4,2.e4,21097.5,2.5e4,2*21097.5])
@@ -67,6 +77,8 @@ for i in arange(len(distance)/2.):
     
     
 
+
+# Read in the data into the pandas framework:
 
 # In[14]:
 
@@ -119,21 +131,13 @@ for i in arange(len(fns)):
 df2.to_csv(dn+'allrecords.csv')
 
 
-# In[16]:
-
-plot(df["Year"],df["Time"]/60)
-
-
-# In[ ]:
-
-
-
-
 # In[17]:
 
 for i in distance:
    print  i, df2["Year"][df2["Distance"]==i].min(),df2["Year"][df2["Distance"]==i].max()
 
+
+# Generate an array with the world record average pace (in minutes per mile) for every year between 1908 and 2015.  This is used to generate a simple movie showing the evolution of the world record for men and women. 
 
 # In[18]:
 
@@ -205,8 +209,9 @@ for i in arange(years.size):
 
 # ###Calculate how long ago men ran at the same pace as women do in current world records.
 
-# In[21]:
+# In[48]:
 
+print "Distance  year  dt"
 dyear = zeros(distance.size/2)
 for i in arange(distance.size/2):
     #check date when men had same time as latest women's record
@@ -279,7 +284,7 @@ for i in [0]:
     # label()
 
 
-# In[25]:
+# In[36]:
 
 for i in [14]:
     figure()
@@ -298,6 +303,25 @@ for i in [14]:
     ybt = axis()[2]
     text(2000,(.9)*(yup-ybt)+ybt,Ndistance[i])
     # label()
+
+
+# Marathon time improvement for the men:
+
+# In[50]:
+
+1-df2['Time'][mtime].values.min()/df2['Time'][mtime].values.max()
+
+
+# Difference between Men's and Women's world records
+
+# In[45]:
+
+1-df2['Time'][mtime].values.min()/df2['Time'][ftime].values.min()
+
+
+# In[ ]:
+
+
 
 
 # ### 
@@ -336,51 +360,70 @@ for i in arange(distance.size/2):
 df2['Year'][ftime].min()
 
 
-# In[33]:
+# ##Number of world records before and after drug testing
+# 
+# In 1989 the IAAF starting randomzied drug screening outside of competitions (http://www.iaaf.org/about-iaaf/medical-anti-doping).  So we look at the number of world records broken in the 27 years before drug testing began, and 27 records after.
+# 
+# 
+# 
+# First the women:
 
-frecords_long
-
-
-# In[34]:
+# In[61]:
 
 plot(distance[(frecords_long==1.0)*(mrecords_long==1.0)], 
-     frecords_before_88[[(frecords_long==1.0)*(mrecords_long==1.0)]],'r-')
+     frecords_before_88[[(frecords_long==1.0)*(mrecords_long==1.0)]],'r--',lw=2)
 plot(distance[(frecords_long==1.0)*(mrecords_long==1.0)], 
-     frecords_after_88[[(frecords_long==1.0)*(mrecords_long==1.0)]],'r-')
+     frecords_after_88[[(frecords_long==1.0)*(mrecords_long==1.0)]],'r-',lw=2)
 for i in arange(distance.size/2)[(frecords_long==1.0)*(mrecords_long==1.0)]:
     #print Ndistance[i]
     scatter(distance[i],frecords_after_88[i],color='r')
 
     scatter(distance[i],frecords_before_88[i],color='None',marker='s',edgecolor='r')
-    xlim(0,900)
-    ylim(-1,25)
-    xlabel('Distance [m]')
-    ylabel('World Record Races')
+xlim(0,900)
+ylim(-1,25)
+text(400,20,'Before Drug Testing')
+text(400,2,'After Drug Testing')
+xlabel('Distance [m]')
+ylabel('Women\'s World Record Races')
 
 
-# In[35]:
+# In[64]:
 
-for i in arange(distance.size/2)[(frecords_long==1.0)*(mrecords_long==1.0)]:
+plot(distance[(mrecords_long==1.0)*(mrecords_long==1.0)], 
+     mrecords_before_88[[(mrecords_long==1.0)*(mrecords_long==1.0)]],'b--',lw=2)
+plot(distance[(mrecords_long==1.0)*(mrecords_long==1.0)], 
+     mrecords_after_88[[(mrecords_long==1.0)*(mrecords_long==1.0)]],'b-',lw=2)
+for i in arange(distance.size/2)[(mrecords_long==1.0)*(mrecords_long==1.0)]:
     #print Ndistance[i]
     scatter(distance[i],mrecords_after_88[i],color='b')
+
     scatter(distance[i],mrecords_before_88[i],color='None',marker='s',edgecolor='b')
-    xlim(0,1100)
-    ylim(-1,25)
+xlim(0,900)
+ylim(-1,25)
+text(400,10,'Before Drug Testing')
+text(400,0.2,'After Drug Testing')
+xlabel('Distance [m]')
+ylabel('Men\'s World Record Races')
 
 
-# In[350]:
+# In[69]:
 
-mean(frecords_after_88)
+print "Mean women's records before testing:", mean(frecords_before_88), " vs ", mean(frecords_after_88), "after testing"
 
 
-# In[336]:
+# In[71]:
+
+print "Mean men's records before testing:", mean(mrecords_before_88), " vs ", mean(mrecords_after_88), "after testing"
+
+
+# In[73]:
+
+print "Mean men's records before testing:", mean(mrecords_before_88[1:]), " vs ", mean(mrecords_after_88[1:]), "after testing"
+
+
+# In[72]:
 
 frecords_before_88
-
-
-# In[334]:
-
-mean(frecords_before_88)
 
 
 # In[329]:
