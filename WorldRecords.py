@@ -7,6 +7,10 @@
 # 
 # I calculate this for each race, as well as show the evolution of the race times from the 100m to the full marathon over the past century.  Quickly, it became apparent that many of the women's world records were recorded before 1990.  This has been pointed out a number of times as a consequence of prevalent doping prior to the institution of randomized drug tests in 1989.  It appears doping had a much larger impact on women than men.
 # 
+# It is best to view this notebook through the Jupyter nbviewer at:
+# 
+# http://nbviewer.jupyter.org/github/rmoleary/Track-world-records/blob/master/WorldRecords.ipynb
+# 
 
 # In[1]:
 
@@ -224,8 +228,9 @@ ani = animation.FuncAnimation(fig,animate,arange(years.size))
 # 
 # Men's record pace in blue.
 # 
+# View the animation at http://nbviewer.jupyter.org/github/rmoleary/Track-world-records/blob/master/WorldRecords.ipynb
 
-# In[31]:
+# In[50]:
 
 HTML(ani.to_html5_video())
 
